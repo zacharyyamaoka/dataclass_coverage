@@ -1,0 +1,13 @@
+name: test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      # the page tests (a data-ui checkout, Node Playwright, Chrome) skip here; the rows, parts, figures and Viser run
+      - run: uv run --isolated --python ${{ matrix.python }} --extra test python -m pytest -q

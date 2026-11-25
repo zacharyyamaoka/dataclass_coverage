@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dataclass-coverage"
+version = "0.1.0"
+description = "Any list of dataclass records in, how well it covers its declared space out: each field against its Value(low=, high=) range, class balance, missing values, pair planes, 'is more data still adding coverage?'. One payload, four viewers: a data-ui page, Matplotlib, Viser, W&B."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Zach Yamaoka" }]
+keywords = ["dataclasses", "dataset", "coverage", "data-validation", "robotics", "visualization"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.11"
+# WHY numpy and dataclass-values only: the analysis is numpy, and a field's declared range is dataclass_values' Value
+# metadata. Every viewer's tool is an extra, imported only inside its own module.
+dependencies = ["numpy>=1.26", "dataclass-values>=0.1.0"]
+
+[project.urls]
+Source = "https://github.com/zacharyyamaoka/dataclass_coverage"
+
+[project.optional-dependencies]
+viz = ["matplotlib>=3.8"]
+viser = ["viser>=1.1"]
+wandb = ["wandb>=0.19"]
+# WHY robot-msgs in test only: its messages are records the tests flatten, and robot_msgs.coverage.binned is the
+# pair planes' independent oracle; the package itself never imports it (a Space is read duck-typed).
+test = ["pytest>=8", "matplotlib>=3.8", "viser>=1.1", "robot-msgs>=0.3.0", "pillow>=10"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dataclass_coverage"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
