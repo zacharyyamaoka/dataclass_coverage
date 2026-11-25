@@ -58,6 +58,10 @@ def rows(coverage, picks):
 
 @pytest.fixture(scope="module")
 def site(coverage, picks, tmp_path_factory) -> Path:
+    # WHY skip, not fail: the page is vendored from a data-ui checkout; CI has none, and the rows and parts tests (which
+    # need no page) still run there
+    if not (DATA_UI / "bin" / "data-ui.mjs").is_file() or not shutil.which("node"):
+        pytest.skip("needs node and a data-ui checkout (DATA_UI) to vendor the page's kit")
     out = tmp_path_factory.mktemp("record-workbench")
     write_workbench(coverage, picks, out)
     return out
